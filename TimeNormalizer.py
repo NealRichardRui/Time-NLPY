@@ -74,10 +74,12 @@ class TimeNormalizer:
             elif len(res) == 1:
                 dic['type'] = 'timestamp'
                 dic['timestamp'] = res[0].time.format("YYYY-MM-DD HH:mm:ss")
+                dic['text'] = res[0].exp_time
             else:
                 dic['type'] = 'timespan'
                 dic['timespan'] = [res[0].time.format("YYYY-MM-DD HH:mm:ss"), res[1].time.format("YYYY-MM-DD HH:mm:ss")]
-        return json.dumps(dic)
+                dic['text'] = [res[0].exp_time, res[1].exp_time]
+        return dic
 
     def __preHandling(self):
         """
