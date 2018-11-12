@@ -61,6 +61,7 @@ class TimeNormalizer:
         self.__preHandling()
         self.timeToken = self.__timeEx()
         dic = {}
+        dic['handled_text'] = self.target
         res = self.timeToken
         if self.isTimeSpan:
             if self.invalidSpan:
@@ -68,6 +69,7 @@ class TimeNormalizer:
             else:
                 dic['type'] = 'timedelta'
                 dic['timedelta'] = self.timeSpan
+                dic['text'] = res[0].exp_time
         else:
             if len(res) == 0:
                 dic['error'] = 'no time pattern could be extracted.'
