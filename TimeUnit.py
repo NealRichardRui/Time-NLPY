@@ -8,6 +8,7 @@ import regex as re
 import arrow
 import copy
 import json
+from datetime import datetime
 from TimePoint import TimePoint
 from RangeTimeEnum import RangeTimeEnum
 try:
@@ -218,6 +219,16 @@ class TimeUnit:
 				# 处理倾向于未来时间的情况
 				self.preferFuture(3)
 				self.isAllDayTime = False
+		
+		rule = "现在|当前"
+		pattern = re.compile(rule)
+		match = pattern.search(self.exp_time)
+		if match is not None:
+			if self.tp.tunit[3] == -1:  # 增加对没有明确时间点，只写了“现在/当前”这种情况的处理
+				self.tp.tunit[3] = datetime.now().hour
+				# 处理倾向于未来时间的情况
+				self.preferFuture(3)
+				self.isAllDayTime = False
 
 		rule = "早上|早晨|早间|晨间|今早|明早"
 		pattern = re.compile(rule)
@@ -318,6 +329,15 @@ class TimeUnit:
 			# 处理倾向于未来时间的情况
 			# self.preferFuture(4)
 			self.isAllDayTime = False
+		
+		rule = "现在|当前"
+		pattern = re.compile(rule)
+		match = pattern.search(self.exp_time)
+		if match is not None:
+			self.tp.tunit[4] = datetime.now().minute
+			# 处理倾向于未来时间的情况
+			# self.preferFuture(4)
+			self.isAllDayTime = False
 
 	def norm_setsecond(self):
 		"""
@@ -329,6 +349,13 @@ class TimeUnit:
 		match = pattern.search(self.exp_time)
 		if match is not None:
 			self.tp.tunit[5] = int(match.group())
+			self.isAllDayTime = False
+		
+		rule = "现在|当前"
+		pattern = re.compile(rule)
+		match = pattern.search(self.exp_time)
+		if match is not None:
+			self.tp.tunit[5] = datetime.now().second
 			self.isAllDayTime = False
 
 	def norm_setSpecial(self):
@@ -722,7 +749,7 @@ class TimeUnit:
 			self.tp.tunit[1] = int(cur.month)
 		if flag[2]:
 			self.tp.tunit[2] = int(cur.day)
-		self.tp.tunit[3] = int(cur.hour)
+		# self.tp.tunit[3] = int(cur.hour)
 
 	def modifyTimeBase(self):
 		"""
